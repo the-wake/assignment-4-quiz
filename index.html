@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="./assets/css/style.css">
+    <title>Document</title>
+</head>
+<body>
+    <main>
+        <p id="timer">75</p>
+        <h1 id="header">Coding Quiz Challenge</h1>
+        <div id="content">
+            <h2 id="questionSpot"></h2>
+            <h3 id="instructions">Placeholder text for quiz instructions</h3>
+            <div id="responseList">
+                <!-- Make sure this section is narrow at the parent level since it's what validates clicks. -->
+                <p id="q0" data-n="0"></p>
+                <p id="q1" data-n="1"></p>
+                <p id="q2" data-n="2"></p>
+                <p id="q3" data-n="3"></p>
+            </div>
+            <h3 id="feedback"></h3>
+            <h4>Right Answers: <span id="trackRight"></span></h4>
+            <h4>Wrong Answers: <span id="trackWrong"></span></h4>
+            <button id="start">Start!</button>
+            <div id="formScreen">
+                <form>
+                    <label for="initials">Initials: </label>
+                    <input type="text" name="initials"></label>
+                </form>
+                <button id="playAgain">Play Again!</button>
+            </div>
+        </div>
+    </main>
+
+    <script src="./assets/js/script.js"></script>
+</body>
+</html>
