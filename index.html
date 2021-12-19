@@ -16,10 +16,10 @@
             <h3 id="instructions">Placeholder text for quiz instructions</h3>
             <div id="responseList">
                 <!-- Make sure this section is narrow at the parent level since it's what validates clicks. -->
-                <p id="q0" data-n="0"></p>
-                <p id="q1" data-n="1"></p>
-                <p id="q2" data-n="2"></p>
-                <p id="q3" data-n="3"></p>
+                <p class="option" id="q0" data-n="0"></p>
+                <p class="option" id="q1" data-n="1"></p>
+                <p class="option" id="q2" data-n="2"></p>
+                <p class="option" id="q3" data-n="3"></p>
             </div>
             <h3 id="feedback"></h3>
             <h4>Right Answers: <span id="trackRight"></span></h4>
@@ -28,10 +28,15 @@
             <div id="formScreen">
                 <form>
                     <label for="initials">Initials: </label>
-                    <input type="text" name="initials"></label>
+                    <input type="text" name="initials" id="initials"></label>
+                    <button id="subButton">Submit</button>
+                    <p id="thanks"></p>
                 </form>
                 <button id="playAgain">Play Again!</button>
             </div>
+            <ol id="scoreList"></ol>
+        
+            <script src="./assets/js/display.js"></script>
         </div>
     </main>
 

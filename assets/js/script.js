@@ -6,7 +6,7 @@
 
 // TODO: Add score and initials to local storage.
 
-// TODO: Make scoreboard page and create link to it from index.html.
+// TODO: Finish scoreboard page and create link to it from index.html.
 
 var questionSpot = document.getElementById("questionSpot");
 var content = document.getElementById("content");
@@ -20,11 +20,22 @@ var q2 = document.getElementById("q2");
 var q3 = document.getElementById("q3");
 var feedback = document.getElementById("feedback");
 var formScreen = document.getElementById("formScreen");
-var playAgain = document.getElementById("playAgain");
+var subButton = document.getElementById("subButton");
+var thanks = document.getElementById("thanks");
 var trackRight = document.getElementById("trackRight");
 var trackWrong = document.getElementById("trackWrong");
+var scoreList = document.getElementById("scoreList");
 
-var questions = [
+var questionsRegular = [
+    // Should these objects have names or nah?
+    {
+        q: "What is HTML primarily responsible for?",
+        options: ["Responsive content", "Setting class attributes", "Layout of page elements", "All of the above"],
+        correct: 2
+    }
+]
+
+var questionsCyber = [
     // Should these objects have names or nah?
     {
         q: "What is Cyberpunk?",
@@ -43,12 +54,19 @@ var questions = [
     }
 ]
 
+var questions = questionsRegular;
 var qNum = 0;
 var currentQ = questions[qNum];
 var timeLeft = 75;
 var penalty = 10;
 var numCorrect = 0;
 var numIncorrect = 0;
+var locStore = [];
+var highScores = {
+    player: [],
+    finalScore: []
+};
+var scoreList = [];
 
 // Populates question and responses from the currently indexed question.
 // I could rewrite this as a function of i, and increment that instead of querying a global variable. However, so far I've only been able to get it to iterate on its own and haven't figured out how to have it happen only when called, and it also results in some local variables that complicate other functions. May be able to get around it by returning certain valuse, but it seems like the code would be messier and less efficient in the ways I can come up with.
@@ -58,19 +76,13 @@ function populate() {
     currentQ = questions[qNum];
     responseList.style.display="block";
     feedback.style.display="none";
+    // I know there's a way to do this with iteration. However, I can't figure out how to make that work when it comes to replacing textContent across multiple elements. I could instead run an interative create/append command, but I don't know how to iteratively clear all of those after. So for now it just works this way.
     questionSpot.textContent = currentQ.q;
     q0.textContent = currentQ.options[0];
     q1.textContent = currentQ.options[1];
     q2.textContent = currentQ.options[2];
     q3.textContent = currentQ.options[3];
 }
-    
-start.addEventListener("click", function() {
-    start.style.display="none";
-    instructions.textContent = "";
-    populate();
-    runTimer();
-});
 
 function runTimer() {
     timerInterval = setInterval(function() {
@@ -83,6 +95,13 @@ function runTimer() {
         }
     }, 1000)
 };
+    
+start.addEventListener("click", function() {
+    start.style.display="none";
+    instructions.textContent = "";
+    populate();
+    runTimer();
+});
 
 responseList.addEventListener("click", function(event) {
     var clicked = event.target;
@@ -105,13 +124,34 @@ responseList.addEventListener("click", function(event) {
 
 playAgain.addEventListener("click", function() {
     formScreen.style.display="none";
+    thanks.textContent=("");
     numCorrect = 0;
     numIncorrect = 0;
     qNum = 0;
     timeLeft = 75;
-    timer.textContent = 75;    
+    timer.textContent = 75;
     populate();
     runTimer();
+});
+
+subButton.addEventListener("click", function(event) {
+    event.preventDefault();
+    // Want to go over this for efficiency and just doing-it-right.
+    if (document.getElementById("initials").value.length <2 ) {
+        alert("You must enter at least 2 characters.")
+        // Add conditional to prevent multiple submissions.
+    } else {
+        var initEntry = document.getElementById("initials").value;
+        var score = timeLeft;
+        highScores.player.push(initEntry);
+        highScores.finalScore.push(score);
+        // I thought this would overwrite, but I guess it's more like a push than a change.
+        localStorage.setItem("player", highScores.player);
+        localStorage.setItem("score", highScores.finalScore);
+        appendList();
+        thanks.textContent=("Thanks!");
+    };
+
 });
 
 function advance () {
@@ -127,7 +167,7 @@ function advance () {
 
 function correct() {
     feedback.textContent=("Correct!");
-    console.log=("Correct");
+    console.log("Correct");
     numCorrect++;
     trackRight.textContent=(numCorrect);
     advance();
@@ -135,11 +175,10 @@ function correct() {
 
 function incorrect () {
     feedback.textContent=("Incorrect");
-    console.log=("Nope");
+    console.log("Nope");
     numIncorrect++;
     trackWrong.textContent=(numIncorrect);
-    // I tried doing this as decrement, but couldn't find a way of decrementing by a variable so just did it with an extra operator.
-    timeLeft = timeLeft - penalty;
+    timeLeft -= penalty;
     advance();
 };
 
@@ -151,9 +190,27 @@ function finished() {
 }
 
 function stopTimer() {
+    // The timer display isn't decrementing properly if the last question is answered incorrectly, so this tries to force it to update.
+    timer.textContent = timeLeft;
     clearInterval(timerInterval);
 };
-    
+
+// Needs to be set to display name and score as a data pair. Maybe by using spans?
+function appendList(i) {
+    // First, reset the list so a new list isn't generated and appended after.
+    scoreList.innerHTML = "";
+    for (var i = 0; i < highScores.player.length; i++) {
+        var li = document.createElement("li");
+        var entryPl = localStorage.getItem("player");
+        var entrySc = localStorage.getItem("score");
+        var population = document.createElement("p");
+        population.textContent=(entryPl + ": " + entrySc + " point(s)");
+        population.setAttribute("data-index", i);
+        li.appendChild(population);
+        scoreList.appendChild(li);
+    }
+};
+
 
 
 
