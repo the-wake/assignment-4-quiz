@@ -1,15 +1,3 @@
-// TODO: Set up style in CSS.
-
-// TODO: Populate questions.
-
-// TODO: Script a function to continuously evaluate whether the timer has expered, and run the finished() script if so.
-
-// TODO: Make array or object for local storage.
-
-// TODO: Finish scoreboard page and create link to it from index.html.
-
-// TODO: Add sound effects?
-
 var questionSpot = document.getElementById("questionSpot");
 var start = document.getElementById("start");
 var timer = document.getElementById("timer");
@@ -33,6 +21,31 @@ var questionsRegular = [
         q: "What is HTML primarily responsible for?",
         options: ["Responsive content", "Setting class attributes", "Layout of page elements", "All of the above"],
         correct: 2
+    },
+    {
+        q: "In coding, what is the DOM?",
+        options: ["Differential Object Marketing", "Document Object Model", "Digital Optical Monitoring", "Domain"],
+        correct: 1
+    },
+    {
+        q: "Which of these is a commonly-used CDN?",
+        options: ["Git Hub", "Wikipedia", "JSON", "jQuery"],
+        correct: 3
+    },
+    {
+        q: "Which of these is NOT like the others?",
+        options: ["head", "header", "nav", "aside"],
+        correct: 0
+    },
+    {
+        q: "What of these is NOT common front-end language?",
+        options: ["HTML", "CSS", "Java", "JavaScript"],
+        correct: 2
+    },
+    {
+        q: "What is the index number of this question? (Hint: This is the 6th question.)",
+        options: ["1", "5", "6", "7"],
+        correct: 1
     }
 ]
 
@@ -67,20 +80,36 @@ var highScores = {
 };
 var scoreList = [];
 
+// // Populates question and responses from the currently indexed question.
+// function populate() {
+//     trackRight.textContent = numCorrect;
+//     trackWrong.textContent = numIncorrect;
+//     currentQ = questions[qNum];
+//     responseList.style.display="block";
+//     feedback.style.display="none";
+//     // I know there's a way to do this with iteration. However, I can't figure out how to make that work when it comes to replacing textContent across multiple elements. I could instead run an interative create/append command, but I don't know how to iteratively clear all of those after. So for now it just works this way.
+//     questionSpot.textContent = currentQ.q;
+//     q0.textContent = currentQ.options[0];
+//     q1.textContent = currentQ.options[1];
+//     q2.textContent = currentQ.options[2];
+//     q3.textContent = currentQ.options[3];
+
 // Populates question and responses from the currently indexed question.
-// I could rewrite this as a function of i, and increment that instead of querying a global variable. However, so far I've only been able to get it to iterate on its own and haven't figured out how to have it happen only when called, and it also results in some local variables that complicate other functions. May be able to get around it by returning certain valuse, but it seems like the code would be messier and less efficient in the ways I can come up with.
-function populate() {
+function populate(i) {
     trackRight.textContent = numCorrect;
     trackWrong.textContent = numIncorrect;
     currentQ = questions[qNum];
     responseList.style.display="block";
     feedback.style.display="none";
-    // I know there's a way to do this with iteration. However, I can't figure out how to make that work when it comes to replacing textContent across multiple elements. I could instead run an interative create/append command, but I don't know how to iteratively clear all of those after. So for now it just works this way.
     questionSpot.textContent = currentQ.q;
-    q0.textContent = currentQ.options[0];
-    q1.textContent = currentQ.options[1];
-    q2.textContent = currentQ.options[2];
-    q3.textContent = currentQ.options[3];
+    responseList.innerHTML="";
+    for (var i = 0; i < currentQ.options.length; i++) {
+        var option = document.createElement("button");
+        option.className="option";
+        option.setAttribute("data-n", i);
+        option.textContent=currentQ.options[i];
+        responseList.appendChild(option);
+    }
 }
 
 function runTimer() {
@@ -91,6 +120,7 @@ function runTimer() {
         } else {
             console.log("Countdown finished");
             stopTimer();
+            finished();
         }
     }, 1000)
 };
@@ -106,7 +136,7 @@ responseList.addEventListener("click", function(event) {
     var clicked = event.target;
     // Makes sure it's actually an option being clicked and not the parent.
     if (clicked.matches("button")) {
-        // Return the index of the selected response and remove responses.
+        // Return the index of the selected option and remove options.
         var responseID = clicked.getAttribute("data-n");
         responseList.style.display="none";
         feedback.style.display="block";
@@ -135,25 +165,25 @@ playAgain.addEventListener("click", function() {
 
 subButton.addEventListener("click", function(event) {
     event.preventDefault();
-    // Want to go over this for efficiency and just doing-it-right.
     if (document.getElementById("initials").value.length <2 ) {
         alert("You must enter at least 2 characters.")
-        // Add conditional to prevent multiple submissions.
     } else {
-        // This might have a problem where the local storage will be overwritten if the page is reloaded and a new entry is added.
+        subButton.style.display="none";
+        // Populates the global object with whatever information is in the local storage. The conditional is necessary to keep from nullifying the global object if there's nothing yet in local storage.
+        if (JSON.parse(localStorage.getItem("results"))) {
+        highScores = JSON.parse(localStorage.getItem("results"));
+        };
         var initEntry = document.getElementById("initials").value;
         var score = timeLeft;
         highScores.player.push(initEntry);
         highScores.score.push(score);
-        localStorage.setItem("player", JSON.stringify(highScores.player));
-        localStorage.setItem("score", JSON.stringify(highScores.score));
+        localStorage.setItem("results", JSON.stringify(highScores));
         console.log (highScores.player);
         console.log (highScores.score);
-        // // Previous code for storing.
-        // localStorage.setItem("player", highScores.player);
-        // localStorage.setItem("score", highScores.score);
-        // render();
-        thanks.textContent=("Thanks!");
+        thanks.textContent="Thanks! Click here to see the high score page.";
+        // thanks.innerHTML="Thanks! " + "<a href="www.google.com/">Click here</a>" + "to see the high score page.";
+        // thanks.setAttribute("href", "www.google.com/");
+
     };
 
 });
@@ -189,10 +219,13 @@ function incorrect () {
 
 function finished() {
     stopTimer();
+    // This just sets the timer to 0 if you went under 0 by answering a question wrong.
     if (timeLeft < 0) {
         timeLeft = 0;
         timer.textContent = "Time Remaining: " + 0;
     };
+    responseList.style.display="none";
+    subButton.style.display="inline";
     feedback.style.display="none";
     formScreen.style.display="block";
     questionSpot.textContent="Thanks for playing! Your score was " + timeLeft + ". Enter your initials below to save your score, or play again!"
@@ -203,22 +236,6 @@ function stopTimer() {
     timer.textContent = "Time Remaining: " + timeLeft;
     clearInterval(timerInterval);
 };
-
-// Moved this to the display.js file.
-// function appendList(i) {
-//     // First, reset the list so a new list isn't generated and appended after.
-//     scoreList.innerHTML = "";
-//     for (var i = 0; i < highScores.player.length; i++) {
-//         var li = document.createElement("li");
-//         var entryPl = localStorage.getItem("player");
-//         var entrySc = localStorage.getItem("score");
-//         var population = document.createElement("p");
-//         population.textContent=(entryPl + ": " + entrySc + " point(s)");
-//         population.setAttribute("data-index", i);
-//         li.appendChild(population);
-//         scoreList.appendChild(li);
-//     }
-// };
 
 
 
