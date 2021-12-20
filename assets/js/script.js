@@ -2,14 +2,17 @@
 
 // TODO: Populate questions.
 
-// TODO: Find out what is up with the scoring.
+// TODO: Script a function to continuously evaluate whether the timer has expered, and run the finished() script if so.
 
-// TODO: Add score and initials to local storage.
+// TODO: Make array or object for local storage.
 
 // TODO: Finish scoreboard page and create link to it from index.html.
 
+// TODO: Make sure JavaScript links properly to high scores page.
+
+// TODO: Add sound effects?
+
 var questionSpot = document.getElementById("questionSpot");
-var content = document.getElementById("content");
 var start = document.getElementById("start");
 var timer = document.getElementById("timer");
 var instructions = document.getElementById("instructions");
@@ -36,7 +39,6 @@ var questionsRegular = [
 ]
 
 var questionsCyber = [
-    // Should these objects have names or nah?
     {
         q: "What is Cyberpunk?",
         options: ["A game franchise", "A genre", "A setting", "All of the above"],
@@ -57,11 +59,10 @@ var questionsCyber = [
 var questions = questionsRegular;
 var qNum = 0;
 var currentQ = questions[qNum];
-var timeLeft = 75;
+var timeLeft = 5;
 var penalty = 10;
 var numCorrect = 0;
 var numIncorrect = 0;
-var locStore = [];
 var highScores = {
     player: [],
     finalScore: []
@@ -88,14 +89,14 @@ function runTimer() {
     timerInterval = setInterval(function() {
         if (timeLeft > 0) {
             timeLeft--;
-            timer.textContent = timeLeft;
+            timer.textContent = "Time Remaining: " + timeLeft;
         } else {
             console.log("Countdown finished");
             stopTimer();
         }
     }, 1000)
 };
-    
+
 start.addEventListener("click", function() {
     start.style.display="none";
     instructions.textContent = "";
@@ -106,7 +107,7 @@ start.addEventListener("click", function() {
 responseList.addEventListener("click", function(event) {
     var clicked = event.target;
     // Makes sure it's actually an option being clicked and not the parent.
-    if (clicked.matches("p")) {
+    if (clicked.matches("button")) {
         // Return the index of the selected response and remove responses.
         var responseID = clicked.getAttribute("data-n");
         responseList.style.display="none";
@@ -129,7 +130,7 @@ playAgain.addEventListener("click", function() {
     numIncorrect = 0;
     qNum = 0;
     timeLeft = 75;
-    timer.textContent = 75;
+    timer.textContent = "Time Remaining: " + timeLeft;
     populate();
     runTimer();
 });
@@ -156,7 +157,8 @@ subButton.addEventListener("click", function(event) {
 
 function advance () {
     setTimeout(function() {
-        if (qNum + 1 < questions.length) {
+        // Haven't actually checked that this works yet. The timing window is pretty tight.
+        if (timeLeft > 0 && qNum + 1 < questions.length) {
             qNum++;
             populate();
         } else {
@@ -184,14 +186,18 @@ function incorrect () {
 
 function finished() {
     stopTimer();
+    if (timeLeft < 0) {
+        timeLeft = 0;
+        timer.textContent = "Time Remaining: " + 0;
+    };
     feedback.style.display="none";
     formScreen.style.display="block";
-    questionSpot.textContent="Thanks for playing! Your score was " + 0 + ". Enter your initials below to save your score, or play again!"
+    questionSpot.textContent="Thanks for playing! Your score was " + timeLeft + ". Enter your initials below to save your score, or play again!"
 }
 
 function stopTimer() {
     // The timer display isn't decrementing properly if the last question is answered incorrectly, so this tries to force it to update.
-    timer.textContent = timeLeft;
+    timer.textContent = "Time Remaining: " + timeLeft;
     clearInterval(timerInterval);
 };
 

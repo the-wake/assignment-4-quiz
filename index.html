@@ -8,22 +8,21 @@
     <title>Document</title>
 </head>
 <body>
-    <main>
-        <p id="timer">75</p>
+    <header>
         <h1 id="header">Coding Quiz Challenge</h1>
-        <div id="content">
+    </header>
+    <main>
+        <div class="left-area">
             <h2 id="questionSpot"></h2>
-            <h3 id="instructions">Placeholder text for quiz instructions</h3>
+            <h3 id="instructions">Answer the questions before the timer runs out. At the end, you'll be graded on your remaining time. But be careful—each wrong answer will deduct 10 from your timer (and final score)!</h3>
             <div id="responseList">
-                <!-- Make sure this section is narrow at the parent level since it's what validates clicks. -->
-                <p class="option" id="q0" data-n="0"></p>
-                <p class="option" id="q1" data-n="1"></p>
-                <p class="option" id="q2" data-n="2"></p>
-                <p class="option" id="q3" data-n="3"></p>
+                <button class="option" id="q0" data-n="0"></p>
+                <button class="option" id="q1" data-n="1"></p>
+                <button class="option" id="q2" data-n="2"></p>
+                <button class="option" id="q3" data-n="3"></p>
             </div>
             <h3 id="feedback"></h3>
-            <h4>Right Answers: <span id="trackRight"></span></h4>
-            <h4>Wrong Answers: <span id="trackWrong"></span></h4>
+          
             <button id="start">Start!</button>
             <div id="formScreen">
                 <form>
@@ -37,6 +36,11 @@
             <ol id="scoreList"></ol>
         
             <script src="./assets/js/display.js"></script>
+        </div>
+        <div class="right-area">
+            <h4 id="timer">Time Remaining: 75</h4>
+            <h4>Right Answers: <span id="trackRight"></span></h4>
+            <h4>Wrong Answers: <span id="trackWrong"></span></h4>
         </div>
     </main>
 
