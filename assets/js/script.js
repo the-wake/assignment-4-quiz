@@ -8,8 +8,6 @@
 
 // TODO: Finish scoreboard page and create link to it from index.html.
 
-// TODO: Make sure JavaScript links properly to high scores page.
-
 // TODO: Add sound effects?
 
 var questionSpot = document.getElementById("questionSpot");
@@ -59,13 +57,13 @@ var questionsCyber = [
 var questions = questionsRegular;
 var qNum = 0;
 var currentQ = questions[qNum];
-var timeLeft = 5;
+var timeLeft = 75;
 var penalty = 10;
 var numCorrect = 0;
 var numIncorrect = 0;
 var highScores = {
     player: [],
-    finalScore: []
+    score: []
 };
 var scoreList = [];
 
@@ -142,14 +140,19 @@ subButton.addEventListener("click", function(event) {
         alert("You must enter at least 2 characters.")
         // Add conditional to prevent multiple submissions.
     } else {
+        // This might have a problem where the local storage will be overwritten if the page is reloaded and a new entry is added.
         var initEntry = document.getElementById("initials").value;
         var score = timeLeft;
         highScores.player.push(initEntry);
-        highScores.finalScore.push(score);
-        // I thought this would overwrite, but I guess it's more like a push than a change.
-        localStorage.setItem("player", highScores.player);
-        localStorage.setItem("score", highScores.finalScore);
-        appendList();
+        highScores.score.push(score);
+        localStorage.setItem("player", JSON.stringify(highScores.player));
+        localStorage.setItem("score", JSON.stringify(highScores.score));
+        console.log (highScores.player);
+        console.log (highScores.score);
+        // // Previous code for storing.
+        // localStorage.setItem("player", highScores.player);
+        // localStorage.setItem("score", highScores.score);
+        // render();
         thanks.textContent=("Thanks!");
     };
 
@@ -201,21 +204,21 @@ function stopTimer() {
     clearInterval(timerInterval);
 };
 
-// Needs to be set to display name and score as a data pair. Maybe by using spans?
-function appendList(i) {
-    // First, reset the list so a new list isn't generated and appended after.
-    scoreList.innerHTML = "";
-    for (var i = 0; i < highScores.player.length; i++) {
-        var li = document.createElement("li");
-        var entryPl = localStorage.getItem("player");
-        var entrySc = localStorage.getItem("score");
-        var population = document.createElement("p");
-        population.textContent=(entryPl + ": " + entrySc + " point(s)");
-        population.setAttribute("data-index", i);
-        li.appendChild(population);
-        scoreList.appendChild(li);
-    }
-};
+// Moved this to the display.js file.
+// function appendList(i) {
+//     // First, reset the list so a new list isn't generated and appended after.
+//     scoreList.innerHTML = "";
+//     for (var i = 0; i < highScores.player.length; i++) {
+//         var li = document.createElement("li");
+//         var entryPl = localStorage.getItem("player");
+//         var entrySc = localStorage.getItem("score");
+//         var population = document.createElement("p");
+//         population.textContent=(entryPl + ": " + entrySc + " point(s)");
+//         population.setAttribute("data-index", i);
+//         li.appendChild(population);
+//         scoreList.appendChild(li);
+//     }
+// };
 
 
 
