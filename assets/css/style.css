@@ -4,9 +4,14 @@ body {
 }
 
 header {
-    background-color: rgb(199, 199, 199);
+    background-color: rgb(224, 224, 224);
     text-align: center;
     padding: 20px;
+}
+
+main {
+    background-color:rgb(216, 216, 245);
+    min-height: 200px;
 }
 
 .left-area {
@@ -56,6 +61,11 @@ h1 {
 }
 
 h4 {
+    margin: 8px 0;
+}
+
+#thanks {
+    display: block;
     margin: 8px 0;
 }
 

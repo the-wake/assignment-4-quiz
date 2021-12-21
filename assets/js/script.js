@@ -13,10 +13,8 @@ var subButton = document.getElementById("subButton");
 var thanks = document.getElementById("thanks");
 var trackRight = document.getElementById("trackRight");
 var trackWrong = document.getElementById("trackWrong");
-var scoreList = document.getElementById("scoreList");
 
 var questionsRegular = [
-    // Should these objects have names or nah?
     {
         q: "What is HTML primarily responsible for?",
         options: ["Responsive content", "Setting class attributes", "Layout of page elements", "All of the above"],
@@ -78,26 +76,12 @@ var highScores = {
     player: [],
     score: []
 };
-var scoreList = [];
-
-// // Populates question and responses from the currently indexed question.
-// function populate() {
-//     trackRight.textContent = numCorrect;
-//     trackWrong.textContent = numIncorrect;
-//     currentQ = questions[qNum];
-//     responseList.style.display="block";
-//     feedback.style.display="none";
-//     // I know there's a way to do this with iteration. However, I can't figure out how to make that work when it comes to replacing textContent across multiple elements. I could instead run an interative create/append command, but I don't know how to iteratively clear all of those after. So for now it just works this way.
-//     questionSpot.textContent = currentQ.q;
-//     q0.textContent = currentQ.options[0];
-//     q1.textContent = currentQ.options[1];
-//     q2.textContent = currentQ.options[2];
-//     q3.textContent = currentQ.options[3];
 
 // Populates question and responses from the currently indexed question.
 function populate(i) {
     trackRight.textContent = numCorrect;
     trackWrong.textContent = numIncorrect;
+    // The currentQ variable will be used to populate the list of options.
     currentQ = questions[qNum];
     responseList.style.display="block";
     feedback.style.display="none";
@@ -180,15 +164,14 @@ subButton.addEventListener("click", function(event) {
         localStorage.setItem("results", JSON.stringify(highScores));
         console.log (highScores.player);
         console.log (highScores.score);
+        // The hyperlink isn't working yet.
         thanks.textContent="Thanks! Click here to see the high score page.";
         // thanks.innerHTML="Thanks! " + "<a href="www.google.com/">Click here</a>" + "to see the high score page.";
         // thanks.setAttribute("href", "www.google.com/");
-
     };
-
 });
 
-function advance () {
+function advance() {
     setTimeout(function() {
         // Haven't actually checked that this works yet. The timing window is pretty tight.
         if (timeLeft > 0 && qNum + 1 < questions.length) {
@@ -202,15 +185,13 @@ function advance () {
 
 function correct() {
     feedback.textContent=("Correct!");
-    console.log("Correct");
     numCorrect++;
     trackRight.textContent=(numCorrect);
     advance();
 };
 
-function incorrect () {
+function incorrect() {
     feedback.textContent=("Incorrect");
-    console.log("Nope");
     numIncorrect++;
     trackWrong.textContent=(numIncorrect);
     timeLeft -= penalty;
@@ -219,7 +200,7 @@ function incorrect () {
 
 function finished() {
     stopTimer();
-    // This just sets the timer to 0 if you went under 0 by answering a question wrong.
+    // Set the timer to 0 if you went under 0 by answering a question wrong.
     if (timeLeft < 0) {
         timeLeft = 0;
         timer.textContent = "Time Remaining: " + 0;
@@ -232,7 +213,7 @@ function finished() {
 }
 
 function stopTimer() {
-    // The timer display isn't decrementing properly if the last question is answered incorrectly, so this tries to force it to update.
+    // The timer display doesn't decrement properly if the last question is answered incorrectly, so this forces it to update.
     timer.textContent = "Time Remaining: " + timeLeft;
     clearInterval(timerInterval);
 };
